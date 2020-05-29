@@ -18,22 +18,19 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "library_file.v" 
+`include "library_file.v"
 
 module neuron_operation(
     input ARR w,
     input ARR y_out,
-    output integer neuron_value
+    output data neuron_value
     );
     
     ARR scaled_vector;
     
-    integer activation_input;
-    
-    initial
-    begin
-        activation_input = 0;
-    end
+    data activation_input;
+    data neuron_value_slope;
+    data neuron_value_leaky_slope;
     
     pointwise_mult mult_unit1(
         .vector1(w),
@@ -46,12 +43,24 @@ module neuron_operation(
         .out(activation_input)
     );
     
+    qmult fixed_mult_unit1(
+        .i_multiplicand(activation_input),
+        .i_multiplier(`LEAKY_RELU_SLOPE),
+        .o_result(neuron_value_leaky_slope)
+    );
+        
+    qmult fixed_mult_unit2(
+        .i_multiplicand(activation_input),
+        .i_multiplier(`RELU_SLOPE),
+        .o_result(neuron_value_slope)
+    );
+    
     always @(*)
     begin
-        if(activation_input < 0)
-            neuron_value = activation_input / `LEAKY_RELU_SLOPE_DIVIDER;
+        if(activation_input[`BITWIDTH - 1])
+            neuron_value = neuron_value_leaky_slope;
         else
-            neuron_value = activation_input / `RELU_SLOPE_DIVIDER;
+            neuron_value = neuron_value_slope;
     end
         
 endmodule

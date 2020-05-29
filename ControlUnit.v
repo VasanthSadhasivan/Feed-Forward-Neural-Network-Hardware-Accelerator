@@ -29,7 +29,7 @@ module ControlUnit(
     output logic y_RAM_rw,
     output logic d_RAM_rw,
     output logic delta_w_gen_gen,
-    output integer learning_rate,
+    output data learning_rate,
     output logic d_gen_read,
     output logic w_RAM_rw,
     output logic wT_RAM_rw,
@@ -75,12 +75,16 @@ module ControlUnit(
                 INIT:
                     if(done)
                     begin
-                        state <= INIT;
                         layer_index <= 0;
                         neuron_index <= 0;
+                        state <= INIT;
                     end
                     else
+                    begin
+                        layer_index <= 0;
+                        neuron_index <= 0;
                         state <= Read_Neurons;
+                    end
                 Read_Neurons:
                     if(neuron_index < `MAX_NEURONS - 1)
                         state <= Write_Neurons;
@@ -133,7 +137,7 @@ module ControlUnit(
             endcase
     end
 
-    always @ (state, layer_index)
+    always @*
     begin
         case (state)
             INIT:
@@ -274,7 +278,7 @@ module ControlUnit(
                 y_RAM_rw            =  0;
                 d_RAM_rw            =  1;
                 delta_w_gen_gen     =  1;
-                learning_rate       =  `LEARNING_RATE_DIVIDER;
+                learning_rate       =  `LEARNING_RATE;
                 d_gen_read          =  0;
                 w_RAM_rw            =  0;
                 wT_RAM_rw           =  0;

@@ -23,8 +23,8 @@
 module delta_w_gen(
     input CLK,
     input ARR y_out,
-    input integer d,
-    input integer learning_rate_divider,
+    input data d,
+    input data learning_rate,
     input gen,
     output ARR delta_w_out
     );
@@ -39,17 +39,18 @@ module delta_w_gen(
         .out(gradient)
     );
     
-    scalar_divide divide_unit(
+    scalar_mult mult_unit_2(
         .vector1(gradient),
-        .scalar(learning_rate_divider),
+        .scalar(learning_rate),
         .out(delta_w_out_internal_opposite)
     );
     
-    scalar_mult mult_unit_2(
+    scalar_mult mult_unit_3(
         .vector1(delta_w_out_internal_opposite),
-        .scalar(-1),
+        .scalar(`NEG_ONE),
         .out(delta_w_out_internal)
     );
+    
     
     always @(posedge CLK)
     begin

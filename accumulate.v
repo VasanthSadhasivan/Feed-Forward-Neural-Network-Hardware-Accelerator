@@ -23,19 +23,23 @@
 
 module accumulator(
     input ARR vector1,
-    output integer out
+    output data out
     );
     
     ARR sums;
     
-    always @(*)
-    begin
-        sums[0] = vector1[0];
-        
-        for (integer i = 1; i < `MAX_NEURONS; i++) begin
-            sums[i] = sums[i - 1] + vector1[i];
+    assign sums[0] = vector1[0];
+    assign out = sums[`MAX_NEURONS - 1];
+    
+    genvar i;
+    generate        
+        for (i = 1; i < `MAX_NEURONS; i++) begin
+            qadd fixed_add_unit(
+                .a(sums[i - 1]),
+                .b(vector1[i]),
+                .c(sums[i]));
+            //sums[i] = sums[i - 1] + vector1[i];
         end
-        
-        out = sums[`MAX_NEURONS - 1];
-    end
+    endgenerate
+    
 endmodule

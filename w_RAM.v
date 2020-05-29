@@ -36,7 +36,7 @@ module w_RAM(
         for (integer i = 0; i < `MAX_DEPTH; i++) begin
             for(integer j=0; j < `MAX_NEURONS; j++) begin
                 for(integer k=0; k < `MAX_NEURONS; k++) begin
-                    main_ram[i][j][k] = 1;
+                    main_ram[i][j][k] = `WEIGHT_INIT;
                 end
             end
         end

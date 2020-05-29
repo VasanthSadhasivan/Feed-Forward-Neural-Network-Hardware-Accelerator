@@ -24,6 +24,9 @@
 module scalar_divide(
     input ARR vector1,
     input integer scalar,
+    input start,
+    input CLK,
+    output valid,
     output ARR out
     );
     
@@ -31,6 +34,7 @@ module scalar_divide(
     begin
         for (integer i = 0; i < `MAX_NEURONS; i++) begin
             out[i] = vector1[i] / scalar;
+            
         end
     end
 endmodule

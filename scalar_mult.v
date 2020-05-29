@@ -23,14 +23,20 @@
 
 module scalar_mult(
     input ARR vector1,
-    input integer scalar,
+    input data scalar,
     output ARR out
     );
     
-    always @(*)
-    begin
-        for (integer i = 0; i < `MAX_NEURONS; i++) begin
-            out[i] = vector1[i] * scalar;
+
+    genvar i;
+    generate
+        for (i = 0; i < `MAX_NEURONS; i++) begin
+            //out[i] = vector1[i] * scalar;
+            qmult fixed_mult_unit(
+                .i_multiplicand(vector1[i]),
+                .i_multiplier(scalar),
+                .o_result(out[i])
+            );
         end
-    end
+    endgenerate
 endmodule

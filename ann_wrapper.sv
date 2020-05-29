@@ -52,12 +52,12 @@ module ann_wrapper(
     
     integer wT_RAM_column_index;
         
-    integer learning_rate_divider;
+    data learning_rate;
     
-    integer y_RAM_y_in;
+    data y_RAM_y_in;
     ARR y_RAM_y_out;
     
-    integer d_RAM_d_in;
+    data d_RAM_d_in;
     ARR d_RAM_d_out;
     
     ARR delta_w_out;
@@ -92,7 +92,7 @@ module ann_wrapper(
         .CLK(CLK),              
         .y_out(y_RAM_y_out),        
         .d(d_RAM_d_in),            
-        .learning_rate_divider(learning_rate_divider),
+        .learning_rate(learning_rate),
         .gen(delta_w_gen_gen),              
         .delta_w_out(delta_w_out)
     );
@@ -149,7 +149,7 @@ module ann_wrapper(
         .y_RAM_rw(y_RAM_rw),         
         .d_RAM_rw(d_RAM_rw),         
         .delta_w_gen_gen(delta_w_gen_gen),  
-        .learning_rate(learning_rate_divider),
+        .learning_rate(learning_rate),
         .d_gen_read(d_gen_read),       
         .w_RAM_rw(w_RAM_rw),         
         .wT_RAM_rw(wT_RAM_rw),        

@@ -26,10 +26,14 @@ module pointwise_add(
     input ARR vector2,
     output ARR out
     );
-    always @(*)
-    begin
-        for (integer i = 0; i < `MAX_NEURONS; i++) begin
-            out[i] = vector1[i] + vector2[i];
+    genvar i;
+    generate
+        for (i = 0; i < `MAX_NEURONS; i++) begin
+            qadd fixed_add_unit(
+                .a(vector1[i]),
+                .b(vector2[i]),
+                .c(out[i]));
+            //out[i] = vector1[i] + vector2[i];
         end
-    end
+    endgenerate
 endmodule

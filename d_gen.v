@@ -29,17 +29,27 @@ module d_gen(
     input integer layer_index,
     input integer neuron_index,
     input ARR wT,
-    output integer d_generated
+    output data d_generated
     );
     
-    integer d_gen_last;
+    data d_gen_last;
     
     ARR backpropogated_error;
-    integer error_term_hidden;
-    integer d_gen_hidden;
+    
+    data desired_negated;
+    data error_term_hidden;
+    data d_gen_hidden;
+    data d_gen_last_leaky;
+    data d_gen_hidden_leaky;
+    
+    //assign d_gen_last = y_out[neuron_index] - desired[neuron_index];
 
-
-    assign d_gen_last = y_out[neuron_index] - desired[neuron_index];
+    assign desired_negated = 'h80000000 ^ desired[neuron_index];
+    
+    qadd fixed_add_unit(
+                .a(y_out[neuron_index]),
+                .b(desired_negated),
+                .c(d_gen_last));
     
     pointwise_mult mult_unit3(
         .vector1(wT),
@@ -52,6 +62,16 @@ module d_gen(
         .out(d_gen_hidden)
     );
     
+    qmult fixed_mult_unit1(
+        .i_multiplicand(d_gen_last),
+        .i_multiplier(`LEAKY_RELU_SLOPE),
+        .o_result(d_gen_last_leaky));
+        
+    qmult fixed_mult_unit2(
+        .i_multiplicand(d_gen_hidden),
+        .i_multiplier(`LEAKY_RELU_SLOPE),
+        .o_result(d_gen_hidden_leaky));
+        
     always @(posedge CLK)
     begin
         if(read)
@@ -60,15 +80,15 @@ module d_gen(
             begin
                 if(layer_index == `MAX_DEPTH - 1)
                 begin
-                    if(d_gen_last < 0)
-                        d_generated <= d_gen_last / `LEAKY_RELU_SLOPE_DIVIDER;
+                    if(y_out[neuron_index][`BITWIDTH - 1])
+                        d_generated <= d_gen_last_leaky;
                     else
                         d_generated <= d_gen_last;
                 end
                 else
                 begin
-                    if(d_gen_hidden < 0)
-                        d_generated <= d_gen_hidden / `LEAKY_RELU_SLOPE_DIVIDER;
+                    if(y_out[neuron_index][`BITWIDTH - 1])
+                        d_generated <= d_gen_hidden_leaky;
                     else
                         d_generated <= d_gen_hidden;
                 end

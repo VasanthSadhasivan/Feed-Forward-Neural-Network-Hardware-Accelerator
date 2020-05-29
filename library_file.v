@@ -2,14 +2,23 @@
 
    //define all macros here
    //define all functions here
+    
+    `define WEIGHT_INIT 'h1000
+    `define DATA_INIT 'h8000
+   
+    `define NEG_ONE 'h80008000
    
     `define MAX_NEURONS 3
     `define MAX_DEPTH 3
-    `define LEARNING_RATE_DIVIDER 1
-    `define LEAKY_RELU_SLOPE_DIVIDER 16
-    `define RELU_SLOPE_DIVIDER 1
+    `define LEARNING_RATE 'h200 // 2^-6 in decimal
+    `define LEAKY_RELU_SLOPE 'h0000
+    `define RELU_SLOPE 'h8000 // 1 in decimal
     
-    typedef integer ARR[`MAX_NEURONS];
+    `define BITWIDTH 32
+    
+    typedef logic[`BITWIDTH - 1:0] data;
+    
+    typedef data ARR[`MAX_NEURONS];
     
     typedef ARR VAL_MATRIX[`MAX_DEPTH];
     typedef ARR W_MATRIX[`MAX_NEURONS];
@@ -19,4 +28,4 @@
 
     `define SVINCLUDES
 
-`endif
+`endif 

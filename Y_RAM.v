@@ -26,7 +26,7 @@ module Y_RAM(
     input integer neuron_index,
     input ARR master_input,
     input integer layer_index,
-    input integer y_in,
+    input data y_in,
     output ARR y_out,
     output ARR last_layer
     );
@@ -36,7 +36,7 @@ module Y_RAM(
     initial
     begin
         for (integer i = 0; i < `MAX_DEPTH; i++) begin
-            main_ram[i][`MAX_NEURONS-1] = 1;
+            main_ram[i][`MAX_NEURONS-1] = `DATA_INIT;
         end
     end
     

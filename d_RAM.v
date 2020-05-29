@@ -25,7 +25,7 @@ module d_RAM(
     input integer neuron_index,
     input integer layer_index,
     input rw,
-    input integer d_in,
+    input data d_in,
     output ARR d_out
     );
     
